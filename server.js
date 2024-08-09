@@ -5,11 +5,11 @@ import twilio from "twilio";
 import pg from "pg";
 import cron from "node-cron";
 import moment from "moment";
-import "./db/init";
+import { initDB } from "./db/init";
 
 env.config();
 const app = express();
-app.use(bodyParser.urlencoded({ extended: true }));
+const initDB = app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 const db = new pg.Client({
@@ -21,7 +21,14 @@ const db = new pg.Client({
 });
 
 db.connect();
-initDB();
+
+initDB()
+  .then(() => {
+    console.log("Database initialized.");
+  })
+  .catch((err) => {
+    console.error("Error initializing database:", err);
+  });
 
 const port = process.env.PORT || 3000;
 
