@@ -5,7 +5,6 @@ import twilio from "twilio";
 import pg from "pg";
 import cron from "node-cron";
 import moment from "moment";
-import { initDB } from "./db/init";
 
 env.config();
 const app = express();
@@ -22,20 +21,26 @@ const db = new pg.Client({
 
 db.connect();
 
-initDB()
-  .then(() => {
-    console.log("Database initialized.");
-  })
-  .catch((err) => {
-    console.error("Error initializing database:", err);
-  });
-
 const port = process.env.PORT || 3000;
 
 const twilioClient = twilio(
   process.env.TWILIO_ACCOUNT_SID,
   process.env.TWILIO_AUTH_TOKEN
 );
+
+const createTable = async () => {
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS reminders (
+      id SERIAL PRIMARY KEY,
+      phone VARCHAR(20),
+      time TIMESTAMP,
+      message TEXT
+    );
+  `);
+  console.log("Table created successfully");
+};
+
+createTable();
 
 const reminders = {};
 
