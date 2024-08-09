@@ -5,6 +5,7 @@ import twilio from "twilio";
 import pg from "pg";
 import cron from "node-cron";
 import moment from "moment";
+import initDB from "./db/init";
 
 env.config();
 const app = express();
@@ -20,6 +21,7 @@ const db = new pg.Client({
 });
 
 db.connect();
+initDB();
 
 const port = process.env.PORT || 3000;
 
