@@ -5,7 +5,7 @@ import twilio from "twilio";
 import pg from "pg";
 import cron from "node-cron";
 import moment from "moment";
-import initDB from "./db/init";
+import "./db/init";
 
 env.config();
 const app = express();
